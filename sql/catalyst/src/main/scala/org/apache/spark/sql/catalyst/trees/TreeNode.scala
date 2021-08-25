@@ -371,6 +371,13 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product with Tre
    */
   protected final def legacyWithNewChildren(newChildren: Seq[BaseType]): BaseType = {
     assert(newChildren.size == children.size, "Incorrect number of children")
+    var isSame = true
+    newChildren.indices.foreach{ i =>
+      if (!(children(i) fastEquals newChildren(i))) {
+        isSame = false
+      }
+    }
+    if (isSame) this else {
     var changed = false
     val remainingNewChildren = newChildren.toBuffer
     val remainingOldChildren = children.toBuffer
@@ -411,7 +418,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product with Tre
     }
 
     if (changed) makeCopy(newArgs) else this
-  }
+  }}
 
   /**
    * Returns a copy of this node where `rule` has been recursively applied to the tree.
